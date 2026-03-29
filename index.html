@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Simple Go Server — Welcome</title>
+    <meta name="description" content="A clean, responsive landing page template for a Simple Go Server." />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg:#0f1724;
+            --card:#0f1724;
+            --muted:#9aa4b2;
+            --accent1:#6ee7b7;
+            --accent2:#60a5fa;
+            --glass: rgba(255,255,255,0.04);
+            --glass-2: rgba(255,255,255,0.02);
+            --radius:14px;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{
+            margin:0;
+            font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+            background:
+                radial-gradient(1200px 400px at 10% 10%, rgba(96,165,250,0.08), transparent 10%),
+                radial-gradient(800px 300px at 90% 80%, rgba(110,231,183,0.06), transparent 10%),
+                var(--bg);
+            color:#e6eef6;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            line-height:1.45;
+            padding:48px 24px;
+        }
+
+        .container{max-width:1100px;margin:0 auto}
+
+        /* NAV */
+        header{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;
+            margin-bottom:36px;
+        }
+        .brand{
+            display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;
+        }
+        .logo{
+            width:46px;height:46px;border-radius:10px;
+            background:linear-gradient(135deg,var(--accent2),var(--accent1));
+            display:flex;align-items:center;justify-content:center;
+            font-weight:700;color:#082032;
+            box-shadow: 0 6px 20px rgba(2,6,23,0.6), inset 0 -6px 18px rgba(255,255,255,0.06);
+        }
+        nav a{color:var(--muted);text-decoration:none;margin-left:18px;font-weight:600}
+        nav a:hover{color:var(--accent2)}
+
+        /* HERO */
+        .hero{
+            display:flex;
+            gap:28px;
+            align-items:center;
+            justify-content:space-between;
+            margin-bottom:42px;
+            flex-wrap:wrap;
+        }
+        .hero-left{
+            flex:1 1 420px;
+            min-width:260px;
+        }
+        h1{
+            margin:0 0 16px 0;
+            font-size: clamp(1.6rem, 2.2vw + 1rem, 2.6rem);
+            letter-spacing:-0.02em;
+            line-height:1.05;
+        }
+        p.lead{color:var(--muted);margin:0 0 22px 0;font-size:1rem}
+        .cta{display:flex;gap:12px;flex-wrap:wrap}
+        .btn{
+            border:0;padding:12px 16px;border-radius:12px;font-weight:600;cursor:pointer;
+            background:linear-gradient(90deg,var(--accent2),var(--accent1));
+            color:#032033;box-shadow:0 8px 30px rgba(14,30,50,0.45);
+        }
+        .btn.secondary{
+            background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04);
+            box-shadow:none;
+        }
+
+        /* hero card */
+        .hero-card{
+            flex:0 1 380px;
+            min-width:260px;
+            border-radius:16px;
+            padding:18px;
+            background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            backdrop-filter: blur(6px);
+            box-shadow: 0 10px 40px rgba(2,6,23,0.6);
+            border:1px solid var(--glass);
+        }
+        .status{
+            display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;
+            color:var(--muted);font-size:0.95rem;
+        }
+        .badge{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);font-weight:600}
+        .server-info{display:flex;gap:12px;align-items:center}
+        .dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(90deg,#34d399,#059669);box-shadow:0 6px 18px rgba(3,105,83,0.15)}
+        .endpoint{font-weight:700;color:#fff}
+
+        /* FEATURES GRID */
+        .grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:18px;
+            margin-bottom:34px;
+        }
+        .card{
+            padding:18px;border-radius:12px;background:linear-gradient(180deg,var(--glass),var(--glass-2));border:1px solid rgba(255,255,255,0.03);
+            transition:transform .28s cubic-bezier(.2,.9,.3,1), box-shadow .28s;
+        }
+        .card:hover{transform:translateY(-8px);box-shadow:0 25px 50px rgba(2,6,23,0.6)}
+        .card h3{margin:0 0 8px 0}
+        .card p{margin:0;color:var(--muted);font-size:.95rem}
+
+        /* gallery */
+        .gallery{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:10px;
+            margin-top:6px;
+        }
+        .thumb{
+            height:110px;border-radius:10px;background:linear-gradient(135deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+            border:1px solid rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;color:var(--muted);
+        }
+
+        /* footer */
+        footer{
+            margin-top:38px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.02);
+            color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:.95rem;
+        }
+
+        /* responsive */
+        @media (max-width:720px){
+            .gallery{grid-template-columns:repeat(2,1fr)}
+            nav{display:none}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a class="brand" href="#">
+                <div class="logo">SG</div>
+                <div>
+                    <div style="font-weight:600">Simple Go Server</div>
+                    <div style="font-size:.82rem;color:var(--muted);margin-top:2px">Fast • Minimal • Secure</div>
+                </div>
+            </a>
+            <nav aria-label="Main navigation">
+                <a href="#features">Features</a>
+                <a href="#examples">Examples</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="hero-left">
+                    <h1>Beautifully simple static server for Go projects</h1>
+                    <p class="lead">A tiny, fast server to preview and serve your build artifacts. Includes live reload, easy routing, and production-friendly headers.</p>
+
+                    <div class="cta">
+                        <button class="btn" onclick="copyCommand()">Get started</button>
+                        <button class="btn secondary" onclick="document.getElementById('examples').scrollIntoView({behavior:'smooth'})">See examples</button>
+                    </div>
+
+                    <div style="margin-top:18px;color:var(--muted);font-size:.95rem">
+                        Try:
+                        <code style="background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px;margin-left:8px;color:#d9f7ef">go run main.go</code>
+                    </div>
+                </div>
+
+                <aside class="hero-card" aria-hidden="false">
+                    <div class="status">
+                        <div class="badge">Local</div>
+                        <div style="font-size:.95rem;color:var(--muted)">uptime <strong>3h 14m</strong></div>
+                    </div>
+
+                    <div class="server-info" style="margin-top:6px">
+                        <div style="display:flex;flex-direction:column">
+                            <div style="display:flex;gap:10px;align-items:center">
+                                <div class="dot" aria-hidden="true"></div>
+                                <div class="endpoint">http://localhost:8080</div>
+                            </div>
+                            <div style="color:var(--muted);font-size:.92rem;margin-top:8px">Serving /dist • 12 assets • 248KB</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="btn" style="padding:8px 12px;font-size:.92rem" onclick="alert('Started')">Start</button>
+                        <button class="btn secondary" style="padding:8px 12px;font-size:.92rem" onclick="alert('Logs')">View logs</button>
+                    </div>
+                </aside>
+            </section>
+
+            <section id="features" aria-label="Features overview" style="margin-bottom:18px">
+                <div class="grid">
+                    <div class="card">
+                        <h3>Lightweight</h3>
+                        <p>The server is tiny, with minimal dependencies and instant startup times for fast development feedback.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Secure Defaults</h3>
+                        <p>Strong headers, content-type detection, and simple TLS options make production safer with minimal config.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Live Reload</h3>
+                        <p>Auto-reload pages on file changes to accelerate the dev loop — no extra tooling required.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Custom Routing</h3>
+                        <p>Serve SPA fallbacks, custom rewrites, and static assets with a tiny routing table.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Metrics</h3>
+                        <p>Optional lightweight metrics endpoint for basic usage monitoring and health checks.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Cross-platform</h3>
+                        <p>Built with Go — works the same on Windows, macOS and Linux. Single binary deployment.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="examples" aria-label="Examples">
+                <h2 style="margin:0 0 14px 0">Quick examples</h2>
+                <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));">
+                    <div class="card">
+                        <h3>Simple serve</h3>
+                        <p>Serve a directory on port 8080.</p>
+                        <pre style="background:rgba(0,0,0,0.06);padding:10px;border-radius:8px;color:#d2f6ff;margin-top:8px">go run main.go --dir=./dist --port=8080</pre>
+                    </div>
+                    <div class="card">
+                        <h3>SPA fallback</h3>
+                        <p>Route 404s to index.html for client-side routing.</p>
+                        <pre style="background:rgba(0,0,0,0.06);padding:10px;border-radius:8px;color:#d2f6ff;margin-top:8px">--spa=true</pre>
+                    </div>
+                    <div class="card">
+                        <h3>Enable TLS</h3>
+                        <p>Quickly enable TLS with certificate and key files.</p>
+                        <pre style="background:rgba(0,0,0,0.06);padding:10px;border-radius:8px;color:#d2f6ff;margin-top:8px">--tls-cert=cert.pem --tls-key=key.pem</pre>
+                    </div>
+                </div>
+
+                <div style="margin-top:18px">
+                    <div style="color:var(--muted);margin-bottom:8px">Preview</div>
+                    <div class="gallery" role="list">
+                        <div class="thumb">Index</div>
+                        <div class="thumb">Assets</div>
+                        <div class="thumb">API</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact" style="margin-top:26px">
+                <h2 style="margin:0 0 10px 0">Get in touch</h2>
+                <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:8px">
+                    <form onsubmit="event.preventDefault(); alert('Thanks!')"
+                                style="flex:1 1 420px;min-width:260px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)">
+                        <label style="display:block;font-weight:600;margin-bottom:6px">Email</label>
+                        <input type="email" required placeholder="you@company.com" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit;margin-bottom:8px" />
+                        <label style="display:block;font-weight:600;margin-bottom:6px">Message</label>
+                        <textarea required placeholder="How can we help?" rows="4" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:inherit"></textarea>
+                        <div style="margin-top:10px">
+                            <button class="btn" type="submit">Send message</button>
+                        </div>
+                    </form>
+
+                    <div style="flex:0 0 240px;min-width:200px;color:var(--muted);align-self:flex-start">
+                        <div style="font-weight:600;margin-bottom:8px">Address</div>
+                        <div>Localhost Labs</div>
+                        <div style="margin-top:12px;font-weight:600;margin-bottom:8px">Support</div>
+                        <div>support@example.com</div></div></section></div>
